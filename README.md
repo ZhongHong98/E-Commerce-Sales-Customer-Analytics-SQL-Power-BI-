@@ -159,7 +159,7 @@ The dataset follows a relational structure centered around the **orders** table,
 *   **Seller Location**: `sellers.seller_zip_code_prefix` → `geolocation.geolocation_zip_code_prefix`
 *   **Product Categories**: `products.product_category_name` → `product_category_name_translation.product_category_name`
 
-[Data Schema](Dataset/Data_Schema.png)
+![Data Schema](Dataset/Data_Schema.png)
 
 #### Central Fact Table
 The `orders` table acts as the **central fact table**, connecting customer demographics, transaction details, product data, and seller information. 
