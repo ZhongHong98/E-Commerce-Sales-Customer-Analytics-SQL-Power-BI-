@@ -33,7 +33,7 @@ This project utilizes the **Brazilian E-Commerce Public Dataset by Olist**. It c
 
 The dataset provides a 360-degree view of an e-commerce ecosystem, covering customer behavior, seller performance, logistics, and product reviews.
 
-*   **Source:** [Kaggle – Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com)
+[Download Project Dataset](Dataset/Dataset.zip)
 
 ---
 
@@ -158,6 +158,8 @@ The dataset follows a relational structure centered around the **orders** table,
 *   **Customer Location**: `customers.customer_zip_code_prefix` → `geolocation.geolocation_zip_code_prefix`
 *   **Seller Location**: `sellers.seller_zip_code_prefix` → `geolocation.geolocation_zip_code_prefix`
 *   **Product Categories**: `products.product_category_name` → `product_category_name_translation.product_category_name`
+
+[Data Schema](Dataset/Data_Schema.png)
 
 #### Central Fact Table
 The `orders` table acts as the **central fact table**, connecting customer demographics, transaction details, product data, and seller information. 
