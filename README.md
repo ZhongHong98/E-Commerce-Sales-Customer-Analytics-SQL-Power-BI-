@@ -619,3 +619,383 @@ The `fact_sales` view acts as the central dataset for analysis, enabling efficie
 
 This fact table was also used as the primary data source for the Power BI dashboard, allowing efficient data modeling and visualization.
 
+### Total Revenue Analysis
+This query calculates the total revenue generated from all orders in the dataset.
+The `total_value` column represents the combined value of product price and freight cost for each order item in the `fact_sales` table.
+
+```
+SELECT SUM(total_value) AS total_revenue
+FROM fact_sales;
+```
+
+#### Result
+| Total Revenue       |
+| ------------------- |
+| 15,915,872.32       |
+
+#### Insight
+The platform generated a total revenue of 15.9 million from all completed orders in the dataset.
+This metric provides a high-level overview of overall sales performance and serves as the baseline for further analysis such as monthly revenue trends, product category performance, and customer purchasing behavior.
+
+### Monthly Revenue Trend
+This query calculates the total revenue generated each month by aggregating the `total_value` from the `fact_sales` table.
+
+The `DATE_TRUNC('month', order_date)` function is used to group all orders into their respective months, allowing us to analyze revenue trends over time.
+
+```
+SELECT 
+    DATE_TRUNC('month', order_date) AS month,
+    SUM(total_value) AS revenue
+FROM fact_sales
+GROUP BY month
+ORDER BY month;
+```
+
+#### Result
+
+| ID | Month | Revenue |
+|:---|:---|:---|
+| 1 | 2016-09-01 | 354.75 |
+| 2 | 2016-10-01 | 56989.66 |
+| 3 | 2016-12-01 | 19.62 |
+| 4 | 2017-01-01 | 138160.22 |
+| 5 | 2017-02-01 | 287698.56 |
+| 6 | 2017-03-01 | 434044.94 |
+| 7 | 2017-04-01 | 413387.27 |
+| 8 | 2017-05-01 | 590516.91 |
+| 9 | 2017-06-01 | 507123.25 |
+| 10 | 2017-07-01 | 588966.63 |
+| 11 | 2017-08-01 | 673795.98 |
+| 12 | 2017-09-01 | 723299.96 |
+| 13 | 2017-10-01 | 774005.04 |
+| 14 | 2017-11-01 | 1187779.95 |
+| 15 | 2017-12-01 | 866838.54 |
+| 16 | 2018-01-01 | 1113929.01 |
+| 17 | 2018-02-01 | 998137.75 |
+| 18 | 2018-03-01 | 1159663.98 |
+| 19 | 2018-04-01 | 1162227.22 |
+| 20 | 2018-05-01 | 1150474.33 |
+| 21 | 2018-06-01 | 1023674.47 |
+| 22 | 2018-07-01 | 1061204.65 |
+| 23 | 2018-08-01 | 1003413.17 |
+| 24 | 2018-09-01 | 166.46 |
+
+#### Insight
+The revenue trend shows significant growth throughout 2017, indicating increasing platform adoption and sales volume. Revenue reached a major peak in November 2017 (~1.19M), which may be driven by seasonal shopping events such as Black Friday promotions.
+
+In 2018, monthly revenue remained relatively stable around 1.0M–1.16M, suggesting the platform had reached a more mature and consistent sales level.
+
+The unusually low revenue in September 2016 and September 2018 likely occurs because the dataset contains partial data for those months.
+
+### Average Order Value (AOV)
+This query calculates the Average Order Value (AOV), which represents the average amount spent per order on the platform.
+
+The metric is calculated by dividing the total revenue (`SUM(total_value)`) by the number of unique orders (`COUNT(DISTINCT order_id)`). Using `DISTINCT order_id` ensures that each order is counted only once, even if it contains multiple items.
+
+```
+SELECT 
+    SUM(total_value) / COUNT(DISTINCT order_id) AS avg_order_value
+FROM fact_sales;
+```
+
+#### Result
+| Average Order Value       |
+| ------------------------- |
+| 161.31                    |
+
+#### Insight
+The analysis shows that the average order value is approximately 161.31 per order. This indicates the typical spending amount customers make in a single transaction on the platform.
+
+AOV is an important metric for evaluating customer purchasing behavior and sales efficiency. Increasing AOV can significantly improve overall revenue without needing to acquire more customers. Businesses often improve AOV through strategies such as product bundling, cross-selling, or offering free shipping thresholds.
+
+### Revenue by Product Category (Top 5 & Bottom 5)
+This analysis identifies the highest-performing and lowest-performing product categories based on total revenue.
+
+Two queries were used:
+
+- The first query retrieves the Top 5 categories generating the highest revenue.
+
+- The second query retrieves the Bottom 5 categories with the lowest revenue.
+
+This helps highlight which product categories contribute most to the platform's sales and which categories generate minimal revenue.
+
+```
+-- Top 5 Revenue by Category
+SELECT 
+    product_category_name,
+    SUM(total_value) AS Top_5_Revenue
+FROM fact_sales
+GROUP BY product_category_name
+ORDER BY Top_5_Revenue DESC
+LIMIT 5;
+
+-- Bottom 5 Revenue by Category
+SELECT 
+    product_category_name,
+    SUM(total_value) AS Bottom_5_Revenue
+FROM fact_sales
+GROUP BY product_category_name
+ORDER BY Bottom_5_Revenue ASC
+LIMIT 5;
+```
+
+#### Result
+Top 5 Revenue Categories
+| Product Category       | Revenue      |
+| ---------------------- | ------------ |
+| beleza_saude           | 1,446,622.08 |
+| relogios_presentes     | 1,306,761.40 |
+| cama_mesa_banho        | 1,258,189.51 |
+| esporte_lazer          | 1,163,329.98 |
+| informatica_acessorios | 1,068,070.48 |
+
+Bottom 5 Revenue Categories
+| Product Category              | Revenue  |
+| ----------------------------- | -------- |
+| seguros_e_servicos            | 324.51   |
+| fashion_roupa_infanto_juvenil | 665.36   |
+| cds_dvds_musicais             | 954.99   |
+| casa_conforto_2               | 1,170.58 |
+| flores                        | 1,598.91 |
+
+#### Insight
+The analysis shows that health & beauty (`beleza_saude`) is the top-performing category, generating over 1.44M in revenue, followed by watches & gifts (`relogios_presentes`) and bed, bath & table (`cama_mesa_banho`). These categories represent strong consumer demand and are likely key revenue drivers for the platform.
+
+On the other hand, categories such as insurance & services (`seguros_e_servicos`), kids fashion, and music media products (`cds_dvds_musicais`) contribute very little revenue, suggesting either low demand or limited product offerings in these segments.
+
+### Repeat Purchase Rate
+This analysis measures the Repeat Purchase Rate, which indicates the percentage of customers who placed more than one order on the platform. This metric is useful for understanding customer retention and loyalty.
+
+The query first calculates the number of orders per customer using a Common Table Expression (CTE). It then calculates the percentage of customers who made multiple purchases.
+
+```
+-- Repeat Purchase Rate
+WITH customer_orders AS (
+    SELECT customer_unique_id, COUNT(DISTINCT order_id) AS order_count
+    FROM fact_sales
+    GROUP BY customer_unique_id
+)
+
+SELECT 
+    COUNT(*) FILTER (WHERE order_count > 1) * 100.0 / COUNT(*) AS repeat_rate
+FROM customer_orders;
+```
+
+#### Result
+| Repeat Rate       |
+| ----------------- |
+| 3.05%             |
+
+#### Insight
+The analysis shows that approximately 3.05% of customers made more than one purchase on the platform.
+
+This relatively low repeat purchase rate suggests that most customers in the dataset made only a single purchase, which may indicate that the platform relies heavily on new customer acquisition rather than repeat customers.
+
+### Late Delivery Rate
+This analysis measures the percentage of orders that were delivered later than the estimated delivery date. Delivery performance is an important operational metric because delays can negatively impact customer satisfaction and review scores.
+
+The query checks the `delivery_delay_days` field in the `fact_sales` table. If the value is greater than 0, it means the order was delivered after the estimated delivery date. The percentage of such orders is then calculated against the total number of orders.
+
+```
+-- Late Delivery %
+SELECT 
+    COUNT(*) FILTER (WHERE delivery_delay_days > 0) * 100.0 / COUNT(*) AS late_delivery_pct
+FROM fact_sales;
+```
+
+#### Result
+| Late Delivery Percentage       |
+| ------------------------------ |
+| 6.44%                          |
+
+#### Insight
+The analysis shows that approximately 6.44% of orders were delivered later than the estimated delivery date, while the majority of orders were delivered on time or earlier.
+
+This indicates that the platform's logistics and delivery operations are generally reliable, with only a small portion of orders experiencing delays.
+
+### Review Score vs Delivery Delay
+This analysis examines the relationship between delivery performance and customer review scores. The goal is to understand whether delivery delays impact customer satisfaction.
+
+The query groups orders by `review_score` and calculates the average delivery delay using the `delivery_delay_days` column.
+
+A positive value indicates the order was delivered later than the estimated delivery date, while a negative value means the order was delivered earlier than expected.
+
+```
+-- Review Score vs Delay
+SELECT 
+    review_score,
+    AVG(delivery_delay_days) AS avg_delay
+FROM fact_sales
+GROUP BY review_score
+ORDER BY review_score;
+```
+
+#### Result
+| Review Score | Avg Delivery Delay (Days) |
+| ------------ | ------------------------- |
+| 1            | -5.28                     |
+| 2            | -8.91                     |
+| 3            | -10.18                    |
+| 4            | -11.53                    |
+| 5            | -12.46                    |
+| NULL         | -6.63                     |
+
+#### Insight
+The results show that orders were generally delivered earlier than the estimated delivery date, as all average delay values are negative.
+
+Interestingly, customers who gave higher review scores (4–5 stars) experienced deliveries that were even earlier on average, with 5-star reviews receiving orders approximately 12.46 days earlier than the estimated delivery date.
+
+This suggests that faster-than-expected delivery may positively influence customer satisfaction and review ratings.
+
+### RFM Base Table (Customer Behavior Analysis)
+This analysis prepares the RFM base table, which is commonly used for customer segmentation and behavioral analysis in e-commerce.
+
+RFM stands for:
+
+- Recency (R) – How recently a customer made a purchase
+
+- Frequency (F) – How often a customer makes purchases
+
+- Monetary (M) – How much money a customer spends
+
+The query aggregates order data at the customer level to calculate these three metrics.
+
+```
+-- Calculate RFM Base Table
+WITH rfm_base AS (
+    SELECT
+        customer_unique_id,
+        MAX(order_date) AS last_purchase,
+        COUNT(DISTINCT order_id) AS frequency,
+        SUM(total_value) AS monetary
+    FROM fact_sales
+    GROUP BY customer_unique_id
+)
+
+SELECT *,
+    CURRENT_DATE - last_purchase AS recency
+FROM rfm_base
+ORDER BY frequency DESC
+LIMIT 10;
+```
+
+The query performs the following steps:
+
+1. Customer Aggregation
+
+- Groups the dataset by `customer_unique_id`.
+
+2. Recency
+
+- `MAX(order_date)` identifies the customer's most recent purchase date.
+
+- `CURRENT_DATE - last_purchase` calculates the number of days since the customer's last order.
+
+3. Frequency
+
+- `COUNT(DISTINCT order_id)` measures how many orders each customer placed.
+
+4. Monetary
+
+- `SUM(total_value)` calculates the total spending for each customer.
+
+The result shows the top customers ranked by purchase frequency.
+
+#### Result
+
+| # | Customer Unique Id | Last Purchase | Frequency | Monetary | Recency |
+|:--|:--- |:--- |:--- |:--- |:--- |
+| 1 | 8d50f5eadf50201ccdcedfb9e2ac8455 | 2018-08-20 | 16 | 902.04 | 2759 |
+| 2 | 3e43e6105506432c953e165fb2acf44c | 2018-02-27 | 9 | 1172.67 | 2933 |
+| 3 | ca77025e7201e3b30c44b472ff346268 | 2018-06-01 | 7 | 1122.72 | 2839 |
+| 4 | 6469f99c1f9dfae7733b25662e7f1782 | 2018-06-28 | 7 | 758.83 | 2812 |
+| 5 | 1b6c7548a2a1f9037c1fd3ddfed95f33 | 2018-02-14 | 7 | 959.01 | 2946 |
+| 6 | dc813062e0fc23409cd255f7f53c7074 | 2018-08-23 | 6 | 1033.62 | 2756 |
+| 7 | 63cfc61cee11cbe306bff5857d00bfe4 | 2018-05-28 | 6 | 826.32 | 2843 |
+| 8 | 12f5d6e1cbf93dafd9dcc19095df0b3d | 2017-01-05 | 6 | 110.72 | 3351 |
+| 9 | 47c1a3033b8b77b3ab6e109eb4d5fdf3 | 2018-01-24 | 6 | 997.32 | 2967 |
+| 10 | f0e310a6839dce9de1638e0fe5ab282a | 2018-04-05 | 6 | 540.69 | 2896 |
+
+#### Insight
+The analysis reveals that a small group of customers made multiple purchases, with the most frequent customer placing 16 orders in total. However, even the most active customers did not necessarily generate the highest spending, indicating that purchase frequency and monetary value can vary significantly between customers.
+
+This dataset also shows that many customers have large recency values (thousands of days) because the dataset contains historical transactions, meaning those customers have not made recent purchases relative to the current date.
+
+### RFM Scoring (Customer Segmentation)
+After calculating the RFM base table, the next step is to assign RFM scores to each customer to enable customer segmentation. RFM scoring helps identify high-value customers, loyal customers, and low-engagement customers.
+
+The query uses the NTILE(5) window function to divide customers into five equal groups (quintiles) based on Recency, Frequency, and Monetary values.
+
+RFM Scoring Logic
+- Recency (R) – Customers who purchased more recently receive higher scores.
+
+- Frequency (F) – Customers who place orders more frequently receive higher scores.
+
+- Monetary (M) – Customers who spend more money receive higher scores.
+
+Each metric is scored from 1 to 5, where:
+- 1 = lowest value group
+
+- 5 = highest value group
+
+The final RFM score is calculated by summing the three scores:
+```
+total_score = r_score + f_score + m_score
+```
+
+This produces a maximum score of 15, representing the most valuable customers.
+
+```
+-- Score Each 1-5 (Using NTILE)
+WITH rfm_base AS (
+    -- Step 1: Aggregate the data
+    SELECT
+        customer_unique_id,
+        MAX(order_date) AS last_purchase,
+        COUNT(DISTINCT order_id) AS frequency,
+        SUM(total_value) AS monetary
+    FROM fact_sales
+    GROUP BY customer_unique_id
+),
+rfm AS (
+    -- Step 2: Calculate Recency and Scores using the data from Step 1
+    SELECT *,
+        NTILE(5) OVER (ORDER BY (CURRENT_DATE - last_purchase) DESC) AS r_score,
+        NTILE(5) OVER (ORDER BY frequency) AS f_score,
+        NTILE(5) OVER (ORDER BY monetary) AS m_score
+    FROM rfm_base
+)
+
+-- Step 3: Final Output
+SELECT *,
+    (r_score + f_score + m_score) AS total_score
+FROM rfm
+ORDER BY total_score DESC
+LIMIT 10;
+```
+
+#### Result (Top Customers by RFM Score)
+
+| # | Customer Unique ID | Last Purchase | Frequency | Monetary | R Score | F Score | M Score | Total Score |
+|:--|:--- |:--- |:--- |:--- |:--- |:--- |:--- |:--- |
+| 1 | 2e73f2a365d0f54d1f7743f110dd7dee | 2018-05-29 | 1 | 264.72 | 5 | 5 | 5 | 15 |
+| 2 | c954e813ce233c2fca258c46f7d77dbe | 2018-05-29 | 1 | 217.09 | 5 | 5 | 5 | 15 |
+| 3 | a49ee8aea9e7eb9fd56cb0fb760a4624 | 2018-05-29 | 1 | 883.29 | 5 | 5 | 5 | 15 |
+| 4 | 5648b6872b227b3665ac1172f7eeb205 | 2018-05-29 | 1 | 272.39 | 5 | 5 | 5 | 15 |
+| 5 | ea3370e153242a75139a69bbbfa8efc0 | 2018-05-29 | 1 | 518.59 | 5 | 5 | 5 | 15 |
+| 6 | 846618f4e6c6867cfcfc9d7591282aa3 | 2018-05-29 | 1 | 247.25 | 5 | 5 | 5 | 15 |
+| 7 | 11fe1299aaf7d39a5b8303fd02a91d2d | 2018-05-29 | 1 | 309.35 | 5 | 5 | 5 | 15 |
+| 8 | 33165bcd351264cf06f79fefca8c433c | 2018-05-29 | 1 | 216.60 | 5 | 5 | 5 | 15 |
+| 9 | 814bce430ba8d69ffd9fe2abba84fd55 | 2018-05-29 | 1 | 411.16 | 5 | 5 | 5 | 15 |
+| 10 | 7c16801645ee95153e17bb6e061b57f1 | 2018-05-29 | 1 | 211.91 | 5 | 5 | 5 | 15 |
+
+#### Insight
+The results show customers with the maximum RFM score of 15, meaning they belong to the highest quintile across all three metrics. These customers represent high-value segments who purchased recently, spend relatively more, and are valuable to the business.
+
+Identifying these customers allows businesses to:
+
+- Target them with loyalty programs
+
+- Offer exclusive promotions
+
+- Encourage repeat purchases
