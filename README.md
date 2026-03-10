@@ -1153,6 +1153,7 @@ This suggests that while some sellers succeed through high sales volume, others 
 View the interactive Power BI dashboard and the detailed analysis in the PDF report below.
 
 [Download Power BI File](Power_BI/Brazilian_E-Commerce_Public_Dataset_by_Olist_Power_BI.pbix)
+
 [Download PDF File](Power_BI/Brazilian_E-Commerce_Public_Dataset_by_Olist_Power_BI.pdf)
 
 ### Executive Overview
