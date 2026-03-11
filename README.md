@@ -1390,7 +1390,7 @@ From the product and seller analysis, several important insights emerge:
 4. Low-performing products may require strategic evaluation, such as pricing adjustments, marketing improvements, or product portfolio optimization.
 
 ### Delivery & Customer Satisfaction
-![Delivery & Customer Satisfaction](Power_BI/Delivery & Customer Satisfaction.png)
+![Delivery & Customer Satisfaction](Power_BI/Delivery_&_Customer_Satisfaction.png)
 
 This dashboard analyzes delivery performance and its relationship with customer satisfaction. The goal is to evaluate how delivery delays affect customer review scores and overall service quality.
 
