@@ -1388,3 +1388,41 @@ From the product and seller analysis, several important insights emerge:
 3. Overall customer satisfaction is relatively high, with an average review score above 4.0.
 
 4. Low-performing products may require strategic evaluation, such as pricing adjustments, marketing improvements, or product portfolio optimization.
+
+### Delivery & Customer Satisfaction
+![Delivery & Customer Satisfaction](Power_BI/Delivery & Customer Satisfaction.png)
+
+This dashboard analyzes delivery performance and its relationship with customer satisfaction. The goal is to evaluate how delivery delays affect customer review scores and overall service quality.
+
+### Delievry Delay Distribution
+The Delivery Delay Distribution chart shows the number of orders grouped by delivery delay days.
+
+#### Insight
+
+Most deliveries are clustered around negative delay values, meaning that many orders were delivered earlier than the estimated delivery date. This indicates relatively strong logistics performance.
+
+Only a small portion of orders experienced positive delay days, meaning late deliveries. The overall late delivery rate is approximately 6%, suggesting that the majority of deliveries were completed on time or earlier than expected.
+
+However, there are a few extreme cases with very large delays, which may represent logistics issues, outliers, or exceptional delivery circumstances.
+
+### Delivery Delay VS Customer Review Score
+The scatter plot analyzes the relationship between delivery delay and customer review scores, with bubble size representing order revenue.
+
+#### Insight
+
+Customer review scores generally remain high (around 4–5) even when delivery delays occur, suggesting that delivery speed alone may not be the only factor influencing customer satisfaction.
+
+However, extremely delayed deliveries tend to show more lower review scores, indicating that severe logistics delays can negatively impact the customer experience.
+
+The chart also shows that larger orders (higher revenue bubbles) are spread across different delay levels, suggesting that order value does not strongly influence delivery speed.
+
+### Key Business Insights
+Several important patterns emerge from the delivery and satisfaction analysis:
+
+1. Most deliveries are completed early or on time, indicating efficient logistics operations.
+
+2. The late delivery rate is relatively low (~6%), which supports overall customer satisfaction.
+
+3. Severe delivery delays can negatively impact customer reviews, highlighting the importance of maintaining consistent logistics performance.
+
+4. Customer satisfaction is influenced by multiple factors beyond delivery time, such as product quality and seller service.
